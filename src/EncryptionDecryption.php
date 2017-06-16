@@ -28,7 +28,7 @@ class EncryptionDecryption
             $str .= $key . $val;
         }
 
-        return self::string2Hex(md5($str . $secret));
+        return strtoupper(md5($str . $secret));
     }
 
     /**

@@ -9,13 +9,13 @@
 require '../vendor/autoload.php';
 
 $alisms = new \Palisms\Alisms([
-    'app_key' => '23471566',
+    'app_key' => '23471938',
 ]);
 
 $send = new \Palisms\Request\Sms\Send();
 $send->setSmsFreeSignName('测试');
-$send->setRecNum(['18870887449', '18870887449']);
-$send->setSmsTemplateCode('sms_65464');
+$send->setRecNum(['18870887449']);
+$send->setSmsTemplateCode('SMS_16890021');
 
 $alisms->request($send);
 

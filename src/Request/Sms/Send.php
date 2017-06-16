@@ -108,16 +108,11 @@ class Send extends Request
     /**
      * Override
      *
-     * @param array $parameter
-     * @return $this
+     * @return void
      */
-    public function initParameters(array $parameter = [])
+    protected function init()
     {
-        parent::initParameters($parameter);
-
         $this->setSmsType();
-
-        return $this;
     }
 
     /**
@@ -126,10 +121,8 @@ class Send extends Request
      * @return $this
      * @throws PalismsException
      */
-    public function isValid()
+    public function check()
     {
-        parent::isValid();
-
         if ($this->sms_type !== 'normal') {
             throw new PalismsException('短信类型请填写normal');
         }
@@ -145,8 +138,6 @@ class Send extends Request
         if (is_null($this->sms_template_code)) {
             throw new PalismsException('短信模板未设置');
         }
-
-        return $this;
     }
 
 }

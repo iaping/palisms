@@ -65,14 +65,14 @@ class Alisms
      */
     public function request(Request $request)
     {
-        $this->request = $request->initParameters($this->config)->isValid()->sign();
+        $this->request = $request->initParameters($this->config)->sign();
 
         $res = $this->http()->post(self::GATEWAY_HTTP, [
             'form_params' => $this->request->data(),
         ]);
 
         if (($code = $res->getStatusCode()) !== 200) {
-            throw new PalismsException(sprintf('与阿里大于服务器通信错误（HTTP %d）', $code));
+            throw new PalismsException(sprintf('与服务器通信错误（HTTP %d）', $code));
         }
 
         var_dump($res->getBody()->getContents());

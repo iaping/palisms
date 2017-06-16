@@ -33,7 +33,7 @@ abstract class Request extends Parameter
             $this->set($key, $value);
         }
 
-        $this->set('method', $this->method());
+        $this->set('method', $this->method())->init();
 
         return $this;
     }
@@ -45,18 +45,18 @@ abstract class Request extends Parameter
      */
     public function sign()
     {
-        $this->set('sign', EncryptionDecryption::sign($this->ksort()->data(), '123456'));
+        $this->valid()->set('sign', EncryptionDecryption::sign($this->ksort()->data(), '036e11b8a6de42e6732a944740e79f67'));
 
         return $this;
     }
 
     /**
-     * 检查必要参数
+     * 验证
      *
      * @return $this
      * @throws PalismsException
      */
-    public function isValid()
+    public function valid()
     {
         if (! $this->app_key) {
             throw new PalismsException('AppKey未设置');
@@ -74,6 +74,8 @@ abstract class Request extends Parameter
             throw new PalismsException('API协议版本只支持2.0');
         }
 
+        $this->check();
+
         return $this;
     }
 
@@ -83,5 +85,19 @@ abstract class Request extends Parameter
      * @return string
      */
     abstract public function method();
+
+    /**
+     * 初始
+     *
+     * @return void
+     */
+    abstract protected function init();
+
+    /**
+     * 检查
+     *
+     * @return void
+     */
+    abstract protected function check();
 
 }
