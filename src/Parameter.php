@@ -53,6 +53,27 @@ class Parameter
     }
 
     /**
+     * 排除键值
+     *
+     * @param $keys
+     * @return array
+     */
+    public function except($keys)
+    {
+        if (! is_array($keys)) {
+            $keys = [$keys];
+        }
+
+        $new = $this->collections;
+
+        foreach ($keys as $key) {
+            unset($new[$key]);
+        }
+
+        return $new;
+    }
+
+    /**
      * 取得参数
      *
      * @param $key

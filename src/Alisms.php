@@ -37,9 +37,9 @@ class Alisms
     /**
      * 配置
      *
-     * @var array
+     * @var Parameter
      */
-    private $config = [];
+    private $config;
 
     /**
      * HTTP
@@ -69,7 +69,7 @@ class Alisms
      */
     public function __construct(array $config)
     {
-        $this->config = $config;
+        $this->config = new Parameter($config);
     }
 
     /**
@@ -82,7 +82,7 @@ class Alisms
      */
     public function request(Request $request, callable $callback = null)
     {
-        $this->request = $request->initParameters($this->config)->sign();
+        $this->request = $request->initParameters($this->config->except('secret'))->sign($this->config->secret);
 
         try {
             $res = $this->http()->post(self::GATEWAY_HTTP, [

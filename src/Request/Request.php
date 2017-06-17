@@ -44,9 +44,13 @@ abstract class Request extends Parameter
      *
      * @return $this
      */
-    public function sign()
+    public function sign($secret)
     {
-        $this->valid()->set('sign', EncryptionDecryption::sign($this->ksort()->data(), '036e11b8a6de42e6732a944740e79f67'));
+        if (! $secret) {
+            throw new PalismsException('通信密钥未设置(secret)');
+        }
+
+        $this->valid()->set('sign', EncryptionDecryption::sign($this->ksort()->data(), $secret));
 
         return $this;
     }
@@ -60,7 +64,7 @@ abstract class Request extends Parameter
     public function valid()
     {
         if (! $this->app_key) {
-            throw new PalismsException('AppKey未设置');
+            throw new PalismsException('AppKey未设置(app_key)');
         }
 
         if (! in_array($this->format, ['json'])) {

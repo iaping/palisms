@@ -106,9 +106,9 @@ class NumSendRequest extends Request
     }
 
     /**
+     * impl
      *
-     *
-     * @return voidimpl
+     * @return void
      */
     protected function init()
     {

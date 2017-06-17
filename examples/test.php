@@ -10,6 +10,7 @@ require '../vendor/autoload.php';
 
 $alisms = new \Palisms\Alisms([
     'app_key' => '23471938',
+    'secret' => '036e11b8a6de42e6732a944740e79f67',
 ]);
 
 /*print_r(array_column(json_decode('{

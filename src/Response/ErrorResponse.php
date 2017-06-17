@@ -65,7 +65,7 @@ class ErrorResponse extends Response
      */
     public function __toString()
     {
-        return sprintf('%s(%s)', $this->getSubMsg(), $this->getSubCode());
+        return sprintf('%s(%s)', $this->getSubMsg() ?: $this->getMsg(), $this->getSubCode() ?: $this->getCode());
     }
 
 }
