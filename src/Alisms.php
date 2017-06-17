@@ -9,9 +9,14 @@
 
 namespace Palisms;
 
+use Exception;
 use GuzzleHttp\Client;
 use Palisms\Exception\PalismsException;
 use Palisms\Request\Request;
+use Palisms\Response\Response;
+use Palisms\Response\Sms\NumSendResponse;
+use Palisms\Response\ErrorResponse;
+use GuzzleHttp\Psr7\Response as HttpResponse;
 
 class Alisms
 {
@@ -51,6 +56,13 @@ class Alisms
     private $request;
 
     /**
+     * 响应对象
+     *
+     * @var Response
+     */
+    private $response;
+
+    /**
      * Alipay constructor.
      *
      * @param array $config
@@ -61,31 +73,104 @@ class Alisms
     }
 
     /**
+     * 请求阿里大于接口
      *
+     * @param Request $request
+     * @param callable|null $callback
+     * @return Parameter|Response
+     * @throws PalismsException
      */
-    public function request(Request $request)
+    public function request(Request $request, callable $callback = null)
     {
         $this->request = $request->initParameters($this->config)->sign();
 
-        $res = $this->http()->post(self::GATEWAY_HTTP, [
-            'form_params' => $this->request->data(),
-        ]);
+        try {
+            $res = $this->http()->post(self::GATEWAY_HTTP, [
+                'form_params' => $this->request->data(),
+            ]);
+        } catch (Exception $exception) {
+            throw new PalismsException($exception->getMessage());
+        }
 
-        if (($code = $res->getStatusCode()) !== 200) {
+        $this->response = $this->convertResponse($res);
+
+        if ($this->response instanceof ErrorResponse) {
+            throw new PalismsException($this->response);
+        }
+
+        return is_callable($callback) ? $callback($this->response) : $this->response;
+    }
+
+    /**
+     * json转Response
+     *
+     * @param HttpResponse $response
+     * @return Parameter
+     */
+    protected function convertResponse(HttpResponse $response)
+    {
+        $map = $this->responseMap();
+
+        foreach ($this->parseResponse($response) as $key => $value) {
+            if (! is_array($value)) {
+                throw new PalismsException('无法转换对象，联系作者');
+            }
+
+            if (isset($map[$key])) {
+                return new $map[$key]($value);
+            }
+        }
+
+        return new Parameter($value);
+    }
+
+    /**
+     * 解析数据
+     *
+     * @param HttpResponse $response
+     * @return mixed
+     * @throws PalismsException
+     */
+    protected function parseResponse(HttpResponse $response)
+    {
+        if (($code = $response->getStatusCode()) !== 200) {
             throw new PalismsException(sprintf('与服务器通信错误（HTTP %d）', $code));
         }
 
-        var_dump($res->getBody()->getContents());
+        return EncryptionDecryption::json_decode($response->getBody()->getContents(), true, '无法解析服务器数据');
     }
 
     /**
      * 当前请求
      *
-     * @return Parameter
+     * @return Request
      */
     public function currentRequest()
     {
         return $this->request;
+    }
+
+    /**
+     * 当前响应
+     *
+     * @return Response
+     */
+    public function currentResponse()
+    {
+        return $this->response;
+    }
+
+    /**
+     * Response map
+     *
+     * @return array
+     */
+    protected function responseMap()
+    {
+        return [
+            ErrorResponse::MATCH_STRING     => ErrorResponse::class,
+            NumSendResponse::MATCH_STRING   => NumSendResponse::class,
+        ];
     }
 
     /**

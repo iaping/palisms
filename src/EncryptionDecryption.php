@@ -55,10 +55,10 @@ class EncryptionDecryption
      * @return bool
      * @throws \Exception
      */
-    public static function json_encode($value)
+    public static function json_encode($value, $error = null)
     {
         if (($json = json_encode($value)) === false) {
-            throw new PalismsException(json_last_error_msg());
+            throw new PalismsException($error ?: '无法编码数据为JSON');
         }
 
         return $json;
@@ -67,15 +67,16 @@ class EncryptionDecryption
     /**
      * json_decode
      *
-     * @param $json
+     * @param string $json
      * @param bool $assoc
+     * @param string $error
      * @return mixed
      * @throws \Exception
      */
-    public static function json_decode($json, $assoc = true)
+    public static function json_decode($json, $assoc = true, $error = null)
     {
         if (! $data = json_decode($json, $assoc)) {
-            throw new PalismsException(json_last_error_msg());
+            throw new PalismsException(sprintf('%s：%s', $error ?: '无法解析JSON数据', $json));
         }
 
         return $data;

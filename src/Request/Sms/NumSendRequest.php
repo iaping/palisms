@@ -1,6 +1,6 @@
 <?php
 /**
- * 短信发送
+ * 向指定手机号码发送模板短信
  * https://api.alidayu.com/docs/api.htm?spm=a3142.7395905.4.6.OuKgjc&apiId=25450
  *
  * User: APING
@@ -13,7 +13,7 @@ namespace Palisms\Request\Sms;
 use Palisms\Exception\PalismsException;
 use Palisms\Request\Request;
 
-class Send extends Request
+class NumSendRequest extends Request
 {
     /**
      * impl
@@ -106,9 +106,9 @@ class Send extends Request
     }
 
     /**
-     * Override
      *
-     * @return void
+     *
+     * @return voidimpl
      */
     protected function init()
     {
@@ -116,7 +116,7 @@ class Send extends Request
     }
 
     /**
-     * Override
+     * impl
      *
      * @return $this
      * @throws PalismsException

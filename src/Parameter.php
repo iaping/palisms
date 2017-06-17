@@ -7,9 +7,9 @@
  * Time: 22:24
  */
 
-namespace Palisms\Request;
+namespace Palisms;
 
-abstract class Parameter
+class Parameter
 {
     /**
      * 参数集合
@@ -17,6 +17,18 @@ abstract class Parameter
      * @var array
      */
     protected $collections = [];
+
+    /**
+     * Parameter constructor.
+     *
+     * @param array $parameter
+     */
+    public function __construct(array $parameter = [])
+    {
+        foreach ($parameter as $key => $value) {
+            $this->set($key, $value);
+        }
+    }
 
     /**
      * 参数集合
@@ -29,7 +41,7 @@ abstract class Parameter
     }
 
     /**
-     * 键名进行升序排序
+     * 按键名进行升序排序
      *
      * @return $this
      */

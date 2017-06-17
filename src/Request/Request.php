@@ -9,6 +9,7 @@
 
 namespace Palisms\Request;
 
+use Palisms\Parameter;
 use Palisms\EncryptionDecryption;
 use Palisms\Exception\PalismsException;
 
