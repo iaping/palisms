@@ -17,8 +17,8 @@ $alisms = new \Palisms\Alisms([
 $query = new \Palisms\Request\Sms\NumQueryRequest();
 $query->setRecNum('18870887449');
 //$query->setQueryDate(date('Ymd'));
-//$query->setCurrentPage('2');
-//$query->setPageSize('2');
+//$query->setCurrentPage(2);
+//$query->setPageSize(2);
 
 $alisms->request($query, function ($request, $response) {
     print_r($request);
@@ -28,5 +28,5 @@ $alisms->request($query, function ($request, $response) {
     print_r($response->getPageSize());
     print_r($response->getTotalCount());
     print_r($response->getTotalPage());
-    print_r($response->getValues());
+    print_r($response->getResult());
 });

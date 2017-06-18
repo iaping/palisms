@@ -14,9 +14,9 @@ use GuzzleHttp\Client;
 use Palisms\Exception\PalismsException;
 use Palisms\Request\Request;
 use Palisms\Response\Response;
+use Palisms\Response\ErrorResponse;
 use Palisms\Response\Sms\NumQueryResponse;
 use Palisms\Response\Sms\NumSendResponse;
-use Palisms\Response\ErrorResponse;
 use GuzzleHttp\Psr7\Response as HttpResponse;
 
 class Alisms
@@ -140,7 +140,7 @@ class Alisms
             throw new PalismsException(sprintf('与服务器通信错误（HTTP %d）', $code));
         }
 
-        return EncryptionDecryption::json_decode($response->getBody()->getContents(), true, '无法解析服务器数据');
+        return EncryptionDecryption::json_decode($response->getBody(), true, '无法解析服务器数据');
     }
 
     /**
@@ -187,6 +187,9 @@ class Alisms
         if (! $this->http instanceof Client) {
             $this->http = new Client($config + [
                 'verify' => false,
+                'headers' => [
+                    'user-agent' => sprintf('php palisms %s', self::VERSION),
+                ],
             ]);
         }
 

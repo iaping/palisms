@@ -86,7 +86,7 @@ class NumQueryResponse extends Response
      *
      * @return array
      */
-    public function getValues()
+    public function getResult()
     {
         return $this->values ? $this->values['fc_partner_sms_detail_dto'] : [];
     }

@@ -14,24 +14,6 @@ use Palisms\Exception\PalismsException;
 class EncryptionDecryption
 {
     /**
-     * 签名
-     *
-     * @param array $data
-     * @param string $secret
-     * @return string
-     */
-    public static function sign(array $data, $secret = '')
-    {
-        $str = $secret;
-
-        foreach ($data as $key => $val) {
-            $str .= $key . $val;
-        }
-
-        return strtoupper(md5($str . $secret));
-    }
-
-    /**
      * json_encode
      *
      * @param $value

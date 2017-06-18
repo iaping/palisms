@@ -10,7 +10,6 @@
 namespace Palisms\Request;
 
 use Palisms\Parameter;
-use Palisms\EncryptionDecryption;
 use Palisms\Exception\PalismsException;
 
 abstract class Request extends Parameter
@@ -71,10 +70,10 @@ abstract class Request extends Parameter
     public function initParameters(Parameter $parameter)
     {
         $defaults = [
-            'format'        => 'json',                      //响应格式。默认为xml格式，可选值：json
-            'sign_method'   => 'md5',                       //签名的摘要算法，可选值为：md5
-            'timestamp'     => date('Y-m-d H:i:s'),         //发送请求的时间
-            'v'             => '2.0',
+            'format'        => 'json',              //响应格式。只能json
+            'sign_method'   => 'hmac',              //签名的摘要算法，默认：hmac，可选值：hmac,md5
+            'timestamp'     => date('Y-m-d H:i:s'), //发送请求的时间
+            'v'             => '2.0',               //只支持2.0
         ];
 
         foreach ($parameter->except('secret') + $defaults as $key => $value) {
@@ -97,9 +96,48 @@ abstract class Request extends Parameter
             throw new PalismsException('通信密钥未设置(secret)');
         }
 
-        $this->valid()->set('sign', EncryptionDecryption::sign($this->ksort()->data(), $secret));
+        return $this->valid()->set('sign', call_user_func_array([$this, $this->sign_method], [$this->ksort()->data(), $secret]));
+    }
 
-        return $this;
+    /**
+     * MD5签名串
+     *
+     * @param array $data
+     * @param $secret
+     * @return string
+     */
+    protected function md5(array $data, $secret)
+    {
+        return strtoupper(md5($secret . $this->signRaw($data) . $secret));
+    }
+
+    /**
+     * hmac签名串
+     *
+     * @param array $data
+     * @param $secret
+     * @return string
+     */
+    protected function hmac(array $data, $secret)
+    {
+        return strtoupper(hash_hmac('md5', $this->signRaw($data), $secret));
+    }
+
+    /**
+     * 签名原串
+     *
+     * @param array $data
+     * @return string
+     */
+    protected function signRaw(array $data)
+    {
+        $str = '';
+
+        foreach ($data as $key => $val) {
+            $str .= $key . $val;
+        }
+
+        return $str;
     }
 
     /**
@@ -118,8 +156,8 @@ abstract class Request extends Parameter
             throw new PalismsException('响应格式只支持json');
         }
 
-        if (! in_array($this->sign_method, ['md5'])) {
-            throw new PalismsException('签名的摘要算法只支持md5');
+        if (! in_array($this->sign_method, ['hmac', 'md5'])) {
+            throw new PalismsException('签名的摘要算法只支持hmac,md5');
         }
 
         if ($this->v !== '2.0') {
