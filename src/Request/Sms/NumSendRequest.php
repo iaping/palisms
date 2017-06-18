@@ -133,15 +133,15 @@ class NumSendRequest extends Request
         }
 
         if (is_null($this->sms_free_sign_name)) {
-            throw new PalismsException('短信签名未设置');
+            throw new PalismsException('短信签名未设置(sms_free_sign_name)');
         }
 
         if (is_null($this->rec_num)) {
-            throw new PalismsException('短信接收号码未设置');
+            throw new PalismsException('短信接收号码未设置(rec_num)');
         }
 
         if (is_null($this->sms_template_code)) {
-            throw new PalismsException('短信模板未设置');
+            throw new PalismsException('短信模板未设置(sms_template_code)');
         }
     }
 

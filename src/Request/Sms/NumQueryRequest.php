@@ -10,6 +10,7 @@
 
 namespace Palisms\Request\Sms;
 
+use Palisms\Exception\PalismsException;
 use Palisms\Request\Request;
 
 class NumQueryRequest extends Request
@@ -25,7 +26,7 @@ class NumQueryRequest extends Request
     }
 
     /**
-     * 短信发送流水
+     * 发送流水
      * 如：1234^1234
      *
      * @param string $bizId
@@ -108,9 +109,16 @@ class NumQueryRequest extends Request
         }
     }
 
+    /**
+     * impl
+     *
+     * @return void
+     */
     protected function check()
     {
-        // TODO: Implement check() method.
+        if (is_null($this->rec_num)) {
+            throw new PalismsException('接收短信号码(rec_num)');
+        }
     }
 
 }
