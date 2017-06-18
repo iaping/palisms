@@ -10,15 +10,15 @@
 require '../vendor/autoload.php';
 
 $data = [
-    'app_key'   => '23471566',                          //AppKey
-    'secret'    => '2441f58932738517a34d1dbb95707bda',  //通信密钥
+    'app_key'   => '27651236',                          //AppKey
+    'secret'    => '2441f65432738517a34d1dbb95707bda',  //通信密钥
 ];
 
 //----- 用法1，快速用法（推荐） -----------------------------------------------------
 
 \Palisms\Fast::smsNumQuery($data, function ($request) {
     //请求
-    $request->setRecNum('18870887449');
+    $request->setRecNum('13000000000');
 
     //$request->setQueryDate(date('Ymd'));
     //$request->setCurrentPage(1);
@@ -50,7 +50,7 @@ exit(0);
 $alisms = new \Palisms\Alisms($data);
 
 $query = new \Palisms\Request\Sms\NumQueryRequest();
-$query->setRecNum('18870887449');
+$query->setRecNum('13000000000');
 $query->setQueryDate(date('Ymd'));
 $query->setCurrentPage(1);
 $query->setPageSize(10);
