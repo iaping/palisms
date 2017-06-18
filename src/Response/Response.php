@@ -13,11 +13,6 @@ use Palisms\Parameter;
 
 abstract class Response extends Parameter
 {
-    public function valid()
-    {
-
-    }
-
     /**
      * 返回值
      *
@@ -26,6 +21,16 @@ abstract class Response extends Parameter
     public function getResult()
     {
         return $this->result;
+    }
+
+    /**
+     * 是否成功
+     *
+     * @return bool
+     */
+    public function isSuccess()
+    {
+        return (bool) $this->getResult()['success'];
     }
 
     /**

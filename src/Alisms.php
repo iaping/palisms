@@ -14,6 +14,7 @@ use GuzzleHttp\Client;
 use Palisms\Exception\PalismsException;
 use Palisms\Request\Request;
 use Palisms\Response\Response;
+use Palisms\Response\Sms\NumQueryResponse;
 use Palisms\Response\Sms\NumSendResponse;
 use Palisms\Response\ErrorResponse;
 use GuzzleHttp\Psr7\Response as HttpResponse;
@@ -25,7 +26,7 @@ class Alisms
      *
      * @var string
      */
-    const VERSION = '1.0';
+    const VERSION = '1.0@dev';
 
     /**
      * 正式网关
@@ -82,10 +83,10 @@ class Alisms
      */
     public function request(Request $request, callable $callback = null)
     {
-        $this->request = $request->initParameters($this->config->except('secret'))->sign($this->config->secret);
+        $this->request = $request->initParameters($this->config)->sign($this->config->secret);
 
         try {
-            $res = $this->http()->post(self::GATEWAY_HTTP, [
+            $res = $this->createHttpClient()->post(self::GATEWAY_HTTP, [
                 'form_params' => $this->request->data(),
             ]);
         } catch (Exception $exception) {
@@ -98,7 +99,7 @@ class Alisms
             throw new PalismsException($this->response);
         }
 
-        return is_callable($callback) ? $callback($this->response) : $this->response;
+        return is_callable($callback) ? $callback($this->request, $this->response) : $this->response;
     }
 
     /**
@@ -119,6 +120,8 @@ class Alisms
             if (isset($map[$key])) {
                 return new $map[$key]($value);
             }
+
+            break;
         }
 
         return new Parameter($value);
@@ -170,6 +173,7 @@ class Alisms
         return [
             ErrorResponse::MATCH_STRING     => ErrorResponse::class,
             NumSendResponse::MATCH_STRING   => NumSendResponse::class,
+            NumQueryResponse::MATCH_STRING  => NumQueryResponse::class,
         ];
     }
 
@@ -178,12 +182,12 @@ class Alisms
      *
      * @return Client
      */
-    protected function http(array $config = [])
+    protected function createHttpClient(array $config = [])
     {
         if (! $this->http instanceof Client) {
             $this->http = new Client($config + [
-                    'verify' => false,
-                ]);
+                'verify' => false,
+            ]);
         }
 
         return $this->http;

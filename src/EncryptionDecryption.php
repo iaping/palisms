@@ -32,23 +32,6 @@ class EncryptionDecryption
     }
 
     /**
-     * 字符串转16进制
-     *
-     * @param $str
-     * @return string
-     */
-    public static function string2Hex($str)
-    {
-        $hex='';
-
-        for ($i=0; $i < strlen($str); $i++){
-            $hex .= dechex(ord($str[$i]));
-        }
-
-        return $hex;
-    }
-
-    /**
      * json_encode
      *
      * @param $value

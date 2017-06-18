@@ -59,6 +59,16 @@ class ErrorResponse extends Response
     }
 
     /**
+     * 是否成功
+     *
+     * @return bool
+     */
+    public function isSuccess()
+    {
+        return false;
+    }
+
+    /**
      * toString
      *
      * @return string

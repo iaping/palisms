@@ -10,6 +10,7 @@
 
 namespace Palisms\Request\Sms;
 
+use Palisms\EncryptionDecryption;
 use Palisms\Exception\PalismsException;
 use Palisms\Request\Request;
 
@@ -70,9 +71,13 @@ class NumSendRequest extends Request
      * @param $smsParam
      * @return $this
      */
-    public function setSmsParam($smsParam)
+    public function setSmsParam(array $smsParam)
     {
-        return $this->set('sms_param', $smsParam);
+        if (! count($smsParam)) {
+            return $this;
+        }
+
+        return $this->set('sms_param', EncryptionDecryption::json_encode($smsParam, '短信模板变量无法编码为JSON'));
     }
 
     /**

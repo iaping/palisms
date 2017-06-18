@@ -16,12 +16,59 @@ use Palisms\Exception\PalismsException;
 abstract class Request extends Parameter
 {
     /**
-     * 初始参数
+     * TOP分配给应用的AppKey
      *
-     * @param array $parameter
+     * @param string $appKey
      * @return $this
      */
-    public function initParameters(array $parameter = [])
+    public function setAppKey($appKey)
+    {
+        return $this->set('app_key', $appKey);
+    }
+
+    /**
+     * 被调用的目标AppKey
+     * 仅当被调用的API为第三方ISV提供时有效
+     *
+     * @param string $targetAppKey
+     * @return $this
+     */
+    public function setTargetAppKey($targetAppKey)
+    {
+        return $this->set('target_app_key', $targetAppKey);
+    }
+
+    /**
+     * 用户登录授权成功后，TOP颁发给应用的授权信息
+     * 当此API的标签上注明：“需要授权”，则此参数必传；“不需要授权”，则此参数不需要传；“可选授权”，则此参数为可选。
+     * http://open.taobao.com/docs/doc.htm?spm=a3142.7395905.4.26.YFnuhE&docType=1&articleId=102635&treeId=1
+     *
+     * @param string $session
+     * @return $this
+     */
+    public function setSession($session)
+    {
+        return $this->set('session', $session);
+    }
+
+    /**
+     * 合作伙伴身份标识
+     *
+     * @param string $partnerId
+     * @return $this
+     */
+    public function setPartnerId($partnerId)
+    {
+        return $this->set('partner_id', $partnerId);
+    }
+
+    /**
+     * 初始参数
+     *
+     * @param Parameter $parameter
+     * @return $this
+     */
+    public function initParameters(Parameter $parameter)
     {
         $defaults = [
             'format'        => 'json',                      //响应格式。默认为xml格式，可选值：json
@@ -30,7 +77,7 @@ abstract class Request extends Parameter
             'v'             => '2.0',
         ];
 
-        foreach ($parameter + $defaults as $key => $value) {
+        foreach ($parameter->except('secret') + $defaults as $key => $value) {
             $this->set($key, $value);
         }
 
