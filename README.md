@@ -1,6 +1,6 @@
 阿里大于短信SDK PHP版
 =======================
-[![composer](https://img.shields.io/badge/composer-aping/palisms-red.svg?maxAge=2592000)](https://packagist.org/packages/aping/palisms) [![php>=5.5](https://img.shields.io/badge/php->%3D5.4-orange.svg?maxAge=2592000)](#) [![license=MIT](https://img.shields.io/badge/license-MIT-blue.svg?maxAge=2592000)](#)
+[![composer](https://img.shields.io/badge/composer-aping/palisms-red.svg?maxAge=2592000)](https://packagist.org/packages/aping/palisms) [![php>=5.5](https://img.shields.io/badge/php->%3D5.5-orange.svg?maxAge=2592000)](#) [![license=MIT](https://img.shields.io/badge/license-MIT-blue.svg?maxAge=2592000)](#)
 
 Palisms SDK是实现阿里大于短信相关API的一个PHP开发库，便于集成需要短信服务的应用。
 
