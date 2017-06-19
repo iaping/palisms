@@ -9,8 +9,8 @@
 Palisms SDK是实现阿里大于短信相关API的一个PHP开发库，便于集成需要短信服务的应用。
 
 - 用法简单，提供\Palisms\Fast类快速使用已开发的接口~
-- 注释多多，主要来自官方文档，懒~
-- 面向对象，代码结构清晰，阅读无障碍，要不你试试~
+- 注释多多，主要来自官方文档~
+- 面向对象，代码结构清晰，阅读无障碍~
 - 应该还有，我再想想~
 
 ## API（完成）
@@ -41,7 +41,7 @@ $data = [
 ];
 ```
 
-> 用法一（推荐），发送模板短信
+> 发送模板短信（推荐）
 
 ```php
 \Palisms\Fast::smsNumSend($data, function ($request) {
@@ -64,35 +64,12 @@ $data = [
 });
 ```
 
-> 用法二，发送模板短信
-```php
-$alisms = new \Palisms\Alisms($data);
-
-$send = new \Palisms\Request\Sms\NumSendRequest();
-$send->setSmsFreeSignName('易开发');
-$send->setRecNum(['13000000000']);
-$send->setSmsTemplateCode('SMS_71365710');
-$send->setSmsParam(['code'=>'123456']);
-
-$alisms->request($send, function ($request, $response) {
-    //成功后回调
-
-    //请求
-    print_r($request);
-    //响应
-    print_r($response);
-
-    //print_r($response->getModel());
-    //var_dump($response->isSuccess());
-});
-```
-
-直接COPY，examples下面有使用例子，随便查看~
+直接COPY例子，examples下面有使用例子，随便查看~
 
 ## 帮助
 
 - BUG反馈：https://github.com/git-aping/palisms/issues
-- 大于API文档：https://api.alidayu.com/doc2/apiList.htm
+- API文档：https://api.alidayu.com/doc2/apiList.htm
 - e-mail：czp010443@aliyun.com
 
 ## 最后
