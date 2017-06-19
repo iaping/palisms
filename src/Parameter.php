@@ -124,4 +124,14 @@ class Parameter
         $this->set($key, $value);
     }
 
+    /**
+     * toString
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return EncryptionDecryption::json_encode($this->data());
+    }
+
 }
