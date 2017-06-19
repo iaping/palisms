@@ -21,13 +21,33 @@ class NumSendResponse extends Response
     const MATCH_STRING = 'alibaba_aliqin_fc_sms_num_send_response';
 
     /**
-     * 返回结果（流水编号）
+     * 结果（流水编号）
      *
      * @return string
      */
     public function getModel()
     {
         return $this->getResult()['model'];
+    }
+
+    /**
+     * 错误码
+     *
+     * @return string
+     */
+    public function getErrCode()
+    {
+        return $this->getResult()['err_code'];
+    }
+
+    /**
+     * 信息描述
+     *
+     * @return string
+     */
+    public function getMsg()
+    {
+        return $this->getResult()['msg'];
     }
 
 }
