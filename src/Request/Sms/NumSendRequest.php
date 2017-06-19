@@ -76,6 +76,10 @@ class NumSendRequest extends Request
         if (! count($smsParam)) {
             return $this;
         }
+        //参数值全部转换为STRING
+        foreach ($smsParam as &$param) {
+            $param = "{$param}";
+        }
 
         return $this->set('sms_param', EncryptionDecryption::json_encode($smsParam, '短信模板变量无法编码为JSON'));
     }
