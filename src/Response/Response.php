@@ -14,23 +14,13 @@ use Palisms\Parameter;
 abstract class Response extends Parameter
 {
     /**
-     * 返回值
+     * 结果集
      *
      * @return array
      */
     public function getResult()
     {
         return $this->result;
-    }
-
-    /**
-     * 是否成功
-     *
-     * @return bool
-     */
-    public function isSuccess()
-    {
-        return (bool) $this->getResult()['success'];
     }
 
     /**

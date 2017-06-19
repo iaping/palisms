@@ -31,6 +31,16 @@ class NumSendResponse extends Response
     }
 
     /**
+     * 是否成功
+     *
+     * @return bool
+     */
+    public function isSuccess()
+    {
+        return (bool) $this->getResult()['success'];
+    }
+
+    /**
      * 错误码
      *
      * @return string

@@ -61,16 +61,6 @@ class NumQueryResponse extends Response
     }
 
     /**
-     * 是否成功
-     *
-     * @return bool
-     */
-    public function isSuccess()
-    {
-        return true;
-    }
-
-    /**
      * 数据集合
      * 具体字段定义参考大于文档的响应参数
      * [[
