@@ -52,15 +52,21 @@ $data = [
     $request->setSmsParam(['code'=>'654321']);
 
 }, function ($request, $response) {
-    //成功后回调
+    // 成功后才会回调
 
-    //请求
-    print_r($request);
-    //响应
-    print_r($response);
+    // 请求 NumSendRequest
+    // print_r($request);
     
-    //print_r($response->getModel());
-    //var_dump($response->isSuccess());
+    // 响应 NumSendResponse
+    // print_r($response);
+    
+    // 直接转json方便保存请求和响应的数据
+    // echo $request;
+    // echo $response;
+    
+    // 相关方法
+    // print_r($response->getModel());
+    // var_dump($response->isSuccess());
 });
 ```
 
