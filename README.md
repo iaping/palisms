@@ -16,7 +16,7 @@ Palisms SDK是实现阿里大于短信相关API的一个PHP开发库，便于集
 ## API（完成）
 
 - [短信发送](docs/短信发送.md)
-- [短信发送记录查询](examples/sms_num_query.php)
+- [短信发送记录查询](docs/短信发送记录查询.md)
 
 ## 安装
 
