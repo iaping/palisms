@@ -2,7 +2,6 @@
     "name": "aping/palisms",
     "description": "简单、好用的阿里大于短信开发包（PHP SDK）",
     "keywords": ["alidayu", "alisms", "phpsms", "sms"],
-    "type": "library",
     "license": "MIT",
     "authors": [
         {
