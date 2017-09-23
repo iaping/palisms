@@ -33,18 +33,13 @@ abstract class Request extends Parameter
      */
     public function initParameters(Parameter $parameter)
     {
-        $defaultTimezone = date_default_timezone_get();
-        date_default_timezone_set('GMT');
-
         $defaults = [
-            'Timestamp'         => date('Y-m-d\TH:i:s\Z'),//格式为：yyyy-MM-dd’T’HH:mm:ss’Z’；时区为：GMT
+            'Timestamp'         => $this->_GMTTimestamp(),      //格式为：yyyy-MM-dd’T’HH:mm:ss’Z’；时区为：GMT
             'Format'            => 'JSON',                      //响应格式。只能json
             'SignatureMethod'   => 'HMAC-SHA1',                 //建议固定值：HMAC-SHA1
             'SignatureVersion'  => '1.0',                       //建议固定值：1.0
             'SignatureNonce'    => uniqid(),
         ];
-
-        date_default_timezone_set($defaultTimezone);
 
         foreach ($parameter->except('AccessKeySecret') + $defaults as $key => $value) {
             $this->set($key, $value);
@@ -66,7 +61,9 @@ abstract class Request extends Parameter
             throw new PalismsException('通信密钥未设置(secret)');
         }
 
-        return $this->valid()->set('Signature', $this->hmac($this->ksort()->data(), $secret . '&'));
+        $secret .= '&';
+
+        return $this->valid()->set('Signature', $this->hmac($this->ksort()->data(), $secret));
     }
 
     /**
@@ -78,7 +75,6 @@ abstract class Request extends Parameter
      */
     protected function hmac(array $data, $secret)
     {
-        //var_dump($this->signRaw($data));exit;
         return base64_encode(hash_hmac('sha1', $this->signRaw($data), $secret, true));
     }
 
@@ -93,7 +89,7 @@ abstract class Request extends Parameter
         $str = '';
 
         foreach ($data as $key => $val) {
-            $str .= '&' . $this->percentEncode($key). '=' . $this->percentEncode($val);
+            $str .= '&' . $this->percentEncode($key) . '=' . $this->percentEncode($val);
         }
 
         return 'POST&%2F&' . $this->percentEncode(substr($str, 1));
@@ -132,6 +128,29 @@ abstract class Request extends Parameter
         return $this;
     }
 
+    /**
+     * 请求时间（GMT）
+     *
+     * @return false|string
+     */
+    private function _GMTTimestamp()
+    {
+        $defaultTimezone = date_default_timezone_get();
+
+        date_default_timezone_set('GMT');
+
+        $date = date('Y-m-d\TH:i:s\Z');
+
+        date_default_timezone_set($defaultTimezone);
+
+        return $date;
+    }
+
+    /**
+     * 接口名称
+     *
+     * @return mixed
+     */
     abstract protected function action();
 
     /**
