@@ -26,14 +26,14 @@ class Alisms
      *
      * @var string
      */
-    const VERSION = '1.0@dev';
+    const VERSION = '2.0@dev';
 
     /**
      * 正式网关
      *
      * @var string
      */
-    const GATEWAY_HTTP = 'http://gw.api.taobao.com/router/rest';
+    const GATEWAY_HTTP = 'http://dysmsapi.aliyuncs.com';
 
     /**
      * 配置
@@ -83,7 +83,7 @@ class Alisms
      */
     public function request(Request $request, callable $callback = null)
     {
-        $this->request = $request->initParameters($this->config)->sign($this->config->secret);
+        $this->request = $request->initParameters($this->config)->signature($this->config->AccessKeySecret);
 
         try {
             $res = $this->createHttpClient()->post(self::GATEWAY_HTTP, [
@@ -110,21 +110,7 @@ class Alisms
      */
     protected function convertResponse(HttpResponse $response)
     {
-        $map = $this->responseMap();
-
-        foreach ($this->parseResponse($response) as $key => $value) {
-            if (! is_array($value)) {
-                throw new PalismsException('无法转换对象，联系作者');
-            }
-
-            if (isset($map[$key])) {
-                return new $map[$key]($value);
-            }
-
-            break;
-        }
-
-        return new Parameter($value);
+        return new Response($this->parseResponse($response));
     }
 
     /**
@@ -161,20 +147,6 @@ class Alisms
     public function currentResponse()
     {
         return $this->response;
-    }
-
-    /**
-     * Response map
-     *
-     * @return array
-     */
-    protected function responseMap()
-    {
-        return [
-            ErrorResponse::MATCH_STRING     => ErrorResponse::class,
-            NumSendResponse::MATCH_STRING   => NumSendResponse::class,
-            NumQueryResponse::MATCH_STRING  => NumQueryResponse::class,
-        ];
     }
 
     /**

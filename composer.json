@@ -1,6 +1,6 @@
 {
     "name": "aping/palisms",
-    "description": "简单、好用的阿里大于短信开发包（PHP SDK）",
+    "description": "简单、好用的阿里云通信开发包（PHP SDK）",
     "keywords": ["alidayu", "alisms", "phpsms", "sms"],
     "license": "MIT",
     "authors": [
@@ -18,5 +18,11 @@
 	        "Palisms\\": "src/"
 	    }
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://packagist.phpcomposer.com"
+        }
+    }
 }

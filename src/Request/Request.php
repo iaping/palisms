@@ -15,50 +15,14 @@ use Palisms\Exception\PalismsException;
 abstract class Request extends Parameter
 {
     /**
-     * TOP分配给应用的AppKey
+     * AccessKey
      *
-     * @param string $appKey
+     * @param string $accessKeyId
      * @return $this
      */
-    public function setAppKey($appKey)
+    public function setAccessKeyId($accessKeyId)
     {
-        return $this->set('app_key', $appKey);
-    }
-
-    /**
-     * 被调用的目标AppKey
-     * 仅当被调用的API为第三方ISV提供时有效
-     *
-     * @param string $targetAppKey
-     * @return $this
-     */
-    public function setTargetAppKey($targetAppKey)
-    {
-        return $this->set('target_app_key', $targetAppKey);
-    }
-
-    /**
-     * 用户登录授权成功后，TOP颁发给应用的授权信息
-     * 当此API的标签上注明：“需要授权”，则此参数必传；“不需要授权”，则此参数不需要传；“可选授权”，则此参数为可选。
-     * http://open.taobao.com/docs/doc.htm?spm=a3142.7395905.4.26.YFnuhE&docType=1&articleId=102635&treeId=1
-     *
-     * @param string $session
-     * @return $this
-     */
-    public function setSession($session)
-    {
-        return $this->set('session', $session);
-    }
-
-    /**
-     * 合作伙伴身份标识
-     *
-     * @param string $partnerId
-     * @return $this
-     */
-    public function setPartnerId($partnerId)
-    {
-        return $this->set('partner_id', $partnerId);
+        return $this->set('AccessKeyId', $accessKeyId);
     }
 
     /**
@@ -70,17 +34,18 @@ abstract class Request extends Parameter
     public function initParameters(Parameter $parameter)
     {
         $defaults = [
-            'format'        => 'json',              //响应格式。只能json
-            'sign_method'   => 'hmac',              //签名的摘要算法，默认：hmac，可选值：hmac,md5
-            'timestamp'     => date('Y-m-d H:i:s'), //发送请求的时间
-            'v'             => '2.0',               //只支持2.0
+            'Timestamp'         => date('Y-m-d H:i:s'),   //格式为：yyyy-MM-dd’T’HH:mm:ss’Z’；时区为：GMT
+            'Format'            => 'JSON',                      //响应格式。只能json
+            'SignatureMethod'   => 'HMAC-SHA1',                 //建议固定值：HMAC-SHA1
+            'SignatureVersion'  => '1.0',                       //建议固定值：1.0
+            'SignatureNonce'    => uniqid(),
         ];
 
-        foreach ($parameter->except('secret') + $defaults as $key => $value) {
+        foreach ($parameter->except('AccessKeySecret') + $defaults as $key => $value) {
             $this->set($key, $value);
         }
 
-        $this->set('method', $this->method())->init();
+        $this->set('Action', $this->action())->set('Version', '2017-05-25')->set('RegionId', 'cn-hangzhou');
 
         return $this;
     }
@@ -90,25 +55,13 @@ abstract class Request extends Parameter
      *
      * @return $this
      */
-    public function sign($secret)
+    public function signature($secret)
     {
         if (! $secret) {
             throw new PalismsException('通信密钥未设置(secret)');
         }
 
-        return $this->valid()->set('sign', call_user_func_array([$this, $this->sign_method], [$this->ksort()->data(), $secret]));
-    }
-
-    /**
-     * MD5签名串
-     *
-     * @param array $data
-     * @param $secret
-     * @return string
-     */
-    protected function md5(array $data, $secret)
-    {
-        return strtoupper(md5($secret . $this->signRaw($data) . $secret));
+        return $this->valid()->set('Signature', $this->hmac($this->ksort()->data(), $secret . '&'));
     }
 
     /**
@@ -120,7 +73,8 @@ abstract class Request extends Parameter
      */
     protected function hmac(array $data, $secret)
     {
-        return strtoupper(hash_hmac('md5', $this->signRaw($data), $secret));
+        //var_dump($this->signRaw($data));exit;
+        return base64_encode(hash_hmac('sha1', $this->signRaw($data), $secret, true));
     }
 
     /**
@@ -134,10 +88,26 @@ abstract class Request extends Parameter
         $str = '';
 
         foreach ($data as $key => $val) {
-            $str .= $key . $val;
+            $str .= '&' . $this->percentEncode($key). '=' . $this->percentEncode($val);
         }
 
-        return $str;
+        return 'POST&%2F&' . $this->percentEncode(substr($str, 1));
+    }
+
+    /**
+     * urlencode特殊字符替换
+     *
+     * @param $str
+     * @return mixed|string
+     */
+    protected function percentEncode($str)
+    {
+        $res = urlencode($str);
+        $res = preg_replace('/\+/', '%20', $res);
+        $res = preg_replace('/\*/', '%2A', $res);
+        $res = preg_replace('/%7E/', '~', $res);
+
+        return $res;
     }
 
     /**
@@ -148,20 +118,8 @@ abstract class Request extends Parameter
      */
     public function valid()
     {
-        if (! $this->app_key) {
-            throw new PalismsException('AppKey未设置(app_key)');
-        }
-
-        if (! in_array($this->format, ['json'])) {
-            throw new PalismsException('响应格式只支持json');
-        }
-
-        if (! in_array($this->sign_method, ['hmac', 'md5'])) {
-            throw new PalismsException('签名的摘要算法只支持hmac,md5');
-        }
-
-        if ($this->v !== '2.0') {
-            throw new PalismsException('API协议版本只支持2.0');
+        if (! $this->AccessKeyId) {
+            throw new PalismsException('AccessKeyId未设置(AccessKeyId)');
         }
 
         $this->check();
@@ -169,19 +127,7 @@ abstract class Request extends Parameter
         return $this;
     }
 
-    /**
-     * API方法名称
-     *
-     * @return string
-     */
-    abstract public function method();
-
-    /**
-     * 初始
-     *
-     * @return void
-     */
-    abstract protected function init();
+    abstract protected function action();
 
     /**
      * 检查

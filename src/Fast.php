@@ -3,56 +3,35 @@
  * 快速使用Palisms
  *
  * User: APING
- * Date: 2017/6/18
+ * Date: 2017/9/23
  * Time: 14:45
  */
 
 namespace Palisms;
 
-use Palisms\Request\Sms\NumQueryRequest;
-use Palisms\Request\Sms\NumSendRequest;
+use Palisms\Request\V20170525\SendRequest;
 use Palisms\Response\Response;
 
 class Fast
 {
     /**
      * 向指定手机号码发送模板短信
-     * * $data = [
+     * * $config = [
      *      //必须
-     *      'app_key'               => '24481160',                          //AppKey
-     *      'secret'                => '2441958912738547a34d1dbb95707bd1',  //通信密钥
+     *      'AccessKeyId'       => '24481160',
+     *      'AccessKeySecret'   => '2441958912738547a34d1dbb95707bd1',
      * ]
      *
-     * @param array $data
+     * @param array $config
      * @param callable $reqCall
      * @param callable|null $resCall
      * @return Parameter|Response
      */
-    public static function smsNumSend(array $data, callable $reqCall, callable $resCall = null)
+    public static function smsSend(array $config, callable $reqCall, callable $resCall = null)
     {
-        $reqCall($request = new NumSendRequest());
+        $reqCall($request = new SendRequest());
 
-        return self::alisms($data)->request($request, $resCall);
-    }
-
-    /**
-     * 短信发送记录查询
-     * $data = [
-     *      //必须
-     *      'app_key'   => '24481160',                          //AppKey
-     *      'secret'    => '2441958912738547a34d1dbb95707bd1',  //通信密钥
-     * ]
-     *
-     * @param array $data
-     * @param callable $reqCall
-     * @param callable|null $resCall
-     * @return Parameter|Response
-     */
-    public static function smsNumQuery(array $data, callable $reqCall, callable $resCall = null)
-    {
-        $reqCall($request = new NumQueryRequest());
-
-        return self::alisms($data)->request($request, $resCall);
+        return self::alisms($config)->request($request, $resCall);
     }
 
     /**
@@ -61,9 +40,9 @@ class Fast
      * @param array $data
      * @return Alisms
      */
-    public static function alisms(array $data)
+    public static function alisms(array $config)
     {
-        return new Alisms($data);
+        return new Alisms($config);
     }
 
 }

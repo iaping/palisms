@@ -15,8 +15,7 @@ Palisms SDK是实现阿里云通信相关API的一个PHP开发库，便于集成
 
 ## API（完成）
 
-- [短信发送](docs/短信发送.md)
-- [短信发送记录查询](docs/短信发送记录查询.md)
+- `通过` [短信发送](docs/短信发送.md)
 
 ## 安装
 
@@ -32,26 +31,26 @@ php composer.phar require aping/palisms
 
 ## 用法
 
-> 配置，去大于拿~
+> 配置去阿里云控制台拿~
 
 ```php
-$data = [
-    'app_key'   => '24372456',                          //AppKey
-    'secret'    => '2441f58932938147a34d1dbb95707bda',  //通信密钥
+$config = [
+    'AccessKeyId'       => 'AccessKeyId',
+    'AccessKeySecret'   => 'AccessKeySecret',
 ];
 ```
 
 > 发送模板短信（推荐）
 
 ```php
-\Palisms\Fast::smsNumSend($data, function ($request) {
+\Palisms\Fast::smsNumSend($data, function (SendRequest $request) {
     //请求
     $request->setRecNum(['13000000000']);
     $request->setSmsFreeSignName('易开发');
     $request->setSmsTemplateCode('SMS_71365710');
     $request->setSmsParam(['code'=>'654321']);
 
-}, function ($request, $response) {
+}, function (SendRequest $request, Response $response) {
     // 成功后才会回调
 
     // 请求 NumSendRequest
@@ -65,7 +64,6 @@ $data = [
     // echo $response;
     
     // 相关方法
-    // print_r($response->getModel());
     // var_dump($response->isSuccess());
 });
 ```
