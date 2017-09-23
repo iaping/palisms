@@ -8,6 +8,8 @@
 
 Palisms SDK是实现阿里云通信相关API的一个PHP开发库，便于集成需要短信服务的应用。
 
+阿里大鱼老用户请使用[V1](https://github.com/git-aping/palisms/tree/v1)版本。
+
 - 用法简单，提供\Palisms\Fast类快速使用已开发的接口~
 - 注释多多，主要来自官方文档~
 - 面向对象，代码结构清晰，阅读无障碍~
