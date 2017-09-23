@@ -95,10 +95,6 @@ class Alisms
 
         $this->response = $this->convertResponse($res);
 
-        if ($this->response instanceof ErrorResponse) {
-            throw new PalismsException($this->response);
-        }
-
         return is_callable($callback) ? $callback($this->request, $this->response) : $this->response;
     }
 
