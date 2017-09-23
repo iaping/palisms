@@ -27,7 +27,7 @@ php composer.phar require aping/palisms
 或
 ```bash
 "require": {
-    "aping/palisms": "@dev"
+    "aping/palisms": "dev-master"
 }
 ```
 
@@ -45,7 +45,7 @@ $config = [
 > 发送模板短信（推荐）
 
 ```php
-\Palisms\Fast::smsNumSend($data, function (SendRequest $request) {
+\Palisms\Fast::smsSend($data, function (SendRequest $request) {
     //请求
     $request->setRecNum(['13000000000']);
     $request->setSmsFreeSignName('易开发');
