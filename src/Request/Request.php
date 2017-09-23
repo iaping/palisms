@@ -33,13 +33,18 @@ abstract class Request extends Parameter
      */
     public function initParameters(Parameter $parameter)
     {
+        $defaultTimezone = date_default_timezone_get();
+        date_default_timezone_set('GMT');
+
         $defaults = [
-            'Timestamp'         => date('Y-m-d H:i:s'),   //格式为：yyyy-MM-dd’T’HH:mm:ss’Z’；时区为：GMT
+            'Timestamp'         => date('Y-m-d\TH:i:s\Z'),//格式为：yyyy-MM-dd’T’HH:mm:ss’Z’；时区为：GMT
             'Format'            => 'JSON',                      //响应格式。只能json
             'SignatureMethod'   => 'HMAC-SHA1',                 //建议固定值：HMAC-SHA1
             'SignatureVersion'  => '1.0',                       //建议固定值：1.0
             'SignatureNonce'    => uniqid(),
         ];
+
+        date_default_timezone_set($defaultTimezone);
 
         foreach ($parameter->except('AccessKeySecret') + $defaults as $key => $value) {
             $this->set($key, $value);
